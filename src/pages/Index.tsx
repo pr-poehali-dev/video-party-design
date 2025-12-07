@@ -1,77 +1,17 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
-import VideoPlayer from '@/components/VideoPlayer';
-import ChatPanel from '@/components/ChatPanel';
-import RoomsList from '@/components/RoomsList';
-import VideoRecommendations from '@/components/VideoRecommendations';
-import UserProfile from '@/components/UserProfile';
-import SnowEffect from '@/components/SnowEffect';
 
 export default function Index() {
-  const [activeTab, setActiveTab] = useState('home');
-  const [isWatchingRoom, setIsWatchingRoom] = useState(false);
-  const [currentRoom, setCurrentRoom] = useState<string | null>(null);
-
-  const handleJoinRoom = (roomId: string) => {
-    setCurrentRoom(roomId);
-    setIsWatchingRoom(true);
-  };
-
-  const handleLeaveRoom = () => {
-    setIsWatchingRoom(false);
-    setCurrentRoom(null);
-  };
-
-  if (isWatchingRoom) {
-    return (
-      <div className="min-h-screen bg-background">
-        <SnowEffect />
-        
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="text-3xl">🎬</div>
-              <div>
-                <h1 className="text-xl font-bold">WatchTogether</h1>
-                <p className="text-xs text-muted-foreground">Зимний сезон 2024 ❄️</p>
-              </div>
-            </div>
-
-            <Button variant="outline" onClick={handleLeaveRoom}>
-              <Icon name="ArrowLeft" size={18} className="mr-2" />
-              Покинуть комнату
-            </Button>
-          </div>
-        </header>
-
-        <main className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <VideoPlayer
-                videoUrl=""
-                title="Новогодняя Классика 🎄"
-                onClose={handleLeaveRoom}
-              />
-            </div>
-            <div className="lg:col-span-1 h-[600px]">
-              <ChatPanel />
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
+  const [activeView, setActiveView] = useState('home');
 
   return (
-    <div className="min-h-screen bg-background">
-      <SnowEffect />
-
+    <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="text-3xl sparkle">🎬</div>
+            <div className="text-3xl">🎬</div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 WatchTogether
@@ -94,27 +34,32 @@ export default function Index() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 h-12">
-            <TabsTrigger value="home" className="flex items-center gap-2">
-              <Icon name="Home" size={18} />
-              <span className="hidden sm:inline">Главная</span>
-            </TabsTrigger>
-            <TabsTrigger value="rooms" className="flex items-center gap-2">
-              <Icon name="Users" size={18} />
-              <span className="hidden sm:inline">Комнаты</span>
-            </TabsTrigger>
-            <TabsTrigger value="recommendations" className="flex items-center gap-2">
-              <Icon name="Sparkles" size={18} />
-              <span className="hidden sm:inline">Рекомендации</span>
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <Icon name="User" size={18} />
-              <span className="hidden sm:inline">Профиль</span>
-            </TabsTrigger>
-          </TabsList>
+        <div className="flex gap-4 mb-8 justify-center">
+          <Button 
+            variant={activeView === 'home' ? 'default' : 'outline'}
+            onClick={() => setActiveView('home')}
+          >
+            <Icon name="Home" size={18} className="mr-2" />
+            Главная
+          </Button>
+          <Button 
+            variant={activeView === 'rooms' ? 'default' : 'outline'}
+            onClick={() => setActiveView('rooms')}
+          >
+            <Icon name="Users" size={18} className="mr-2" />
+            Комнаты
+          </Button>
+          <Button 
+            variant={activeView === 'recommendations' ? 'default' : 'outline'}
+            onClick={() => setActiveView('recommendations')}
+          >
+            <Icon name="Sparkles" size={18} className="mr-2" />
+            Рекомендации
+          </Button>
+        </div>
 
-          <TabsContent value="home" className="space-y-8 animate-fade-in">
+        {activeView === 'home' && (
+          <div className="space-y-8 animate-fade-in">
             <section className="relative bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 rounded-2xl p-8 md:p-12 overflow-hidden">
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-10 left-10 text-6xl">🎄</div>
@@ -138,7 +83,7 @@ export default function Index() {
                   <Button 
                     size="lg" 
                     className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30"
-                    onClick={() => setActiveTab('rooms')}
+                    onClick={() => setActiveView('rooms')}
                   >
                     <Icon name="Plus" size={20} className="mr-2" />
                     Создать комнату
@@ -146,7 +91,7 @@ export default function Index() {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    onClick={() => setActiveTab('rooms')}
+                    onClick={() => setActiveView('rooms')}
                   >
                     <Icon name="Search" size={20} className="mr-2" />
                     Найти комнату
@@ -161,40 +106,144 @@ export default function Index() {
                 Популярные комнаты
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[1, 2, 3].map((i) => (
-                  <div
+                {[
+                  { emoji: '🎅', name: 'Новогодняя Классика', viewers: 24 },
+                  { emoji: '🎄', name: 'Зимние Сказки', viewers: 15 },
+                  { emoji: '⛄', name: 'Уютный Вечер', viewers: 8 }
+                ].map((room, i) => (
+                  <Card
                     key={i}
-                    onClick={() => handleJoinRoom(i.toString())}
-                    className="cursor-pointer bg-card border border-border rounded-lg p-4 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/10"
+                    className="bg-card border-border rounded-lg p-4 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/10 cursor-pointer"
                   >
                     <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg flex items-center justify-center text-5xl mb-3">
-                      {['🎅', '🎄', '⛄'][i - 1]}
+                      {room.emoji}
                     </div>
-                    <h4 className="font-semibold mb-1">
-                      {['Новогодняя Классика', 'Зимние Сказки', 'Уютный Вечер'][i - 1]}
-                    </h4>
+                    <h4 className="font-semibold mb-1">{room.name}</h4>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Icon name="Eye" size={14} />
-                      <span>{[24, 15, 8][i - 1]} зрителей</span>
+                      <span>{room.viewers} зрителей</span>
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
             </section>
-          </TabsContent>
+          </div>
+        )}
 
-          <TabsContent value="rooms" className="animate-fade-in">
-            <RoomsList onJoinRoom={handleJoinRoom} />
-          </TabsContent>
+        {activeView === 'rooms' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Icon name="Users" size={28} className="text-primary" />
+                  Активные комнаты
+                </h2>
+                <p className="text-muted-foreground mt-1">Присоединяйтесь к просмотру вместе с друзьями</p>
+              </div>
+              <Button className="bg-primary hover:bg-primary/90">
+                <Icon name="Plus" size={18} className="mr-2" />
+                Создать комнату
+              </Button>
+            </div>
 
-          <TabsContent value="recommendations" className="animate-fade-in">
-            <VideoRecommendations />
-          </TabsContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { id: '1', name: 'Новогодняя Классика 🎄', viewers: 24, video: 'Один Дома', emoji: '🎅', host: 'Мария' },
+                { id: '2', name: 'Зимние Сказки ❄️', viewers: 15, video: 'Морозко', emoji: '⛄', host: 'Александр' },
+                { id: '3', name: 'Уютный Вечер 🕯️', viewers: 8, video: 'Реальная Любовь', emoji: '🎁', host: 'Екатерина' },
+                { id: '4', name: 'Семейный Просмотр 👨‍👩‍👧‍👦', viewers: 32, video: 'Ирония Судьбы', emoji: '🎄', host: 'Дмитрий' },
+                { id: '5', name: 'Мультики для всех 🎬', viewers: 19, video: 'Снежная Королева', emoji: '👑', host: 'Анна' },
+                { id: '6', name: 'Ночной Сеанс 🌙', viewers: 6, video: 'Гарри Поттер', emoji: '⚡', host: 'Иван' }
+              ].map((room) => (
+                <Card key={room.id} className="bg-card border-border hover:border-primary/50 transition-all cursor-pointer group">
+                  <div className="relative aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-6xl">
+                    {room.emoji}
+                    <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-semibold animate-pulse">
+                      LIVE
+                    </div>
+                  </div>
 
-          <TabsContent value="profile" className="animate-fade-in">
-            <UserProfile />
-          </TabsContent>
-        </Tabs>
+                  <div className="p-4 space-y-3">
+                    <div>
+                      <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                        {room.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">{room.video}</p>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">{room.host}</span>
+                      <div className="flex items-center gap-1 text-secondary">
+                        <Icon name="Eye" size={16} />
+                        <span className="text-sm font-medium">{room.viewers}</span>
+                      </div>
+                    </div>
+
+                    <Button className="w-full bg-primary hover:bg-primary/90">
+                      <Icon name="LogIn" size={18} className="mr-2" />
+                      Присоединиться
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeView === 'recommendations' && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Icon name="Sparkles" size={28} className="text-accent" />
+                  Рекомендации
+                </h2>
+                <p className="text-muted-foreground mt-1">Лучшие фильмы для новогоднего настроения</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {[
+                { title: 'Один Дома', duration: '1:43:20', views: '2.3М', emoji: '🎅', category: 'Комедия' },
+                { title: 'Ирония Судьбы', duration: '3:04:15', views: '5.1М', emoji: '🎄', category: 'Классика' },
+                { title: 'Морозко', duration: '1:24:30', views: '1.8М', emoji: '⛄', category: 'Сказка' },
+                { title: 'Реальная Любовь', duration: '2:15:45', views: '3.2М', emoji: '❤️', category: 'Романтика' },
+                { title: 'Снежная Королева', duration: '1:10:20', views: '890К', emoji: '👑', category: 'Мультфильм' },
+                { title: 'Эльф', duration: '1:37:50', views: '1.5М', emoji: '🧝', category: 'Семейный' },
+                { title: 'Гарри Поттер', duration: '2:32:10', views: '4.7М', emoji: '⚡', category: 'Фэнтези' },
+                { title: 'Чародеи', duration: '2:23:00', views: '2.1М', emoji: '🎭', category: 'Музыкальный' }
+              ].map((video, i) => (
+                <Card key={i} className="bg-card border-border hover:border-secondary/50 transition-all cursor-pointer group">
+                  <div className="relative aspect-[3/4] bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 flex items-center justify-center text-7xl">
+                    {video.emoji}
+                    <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-sm px-2 py-1 rounded text-xs text-white font-medium">
+                      {video.duration}
+                    </div>
+                    <div className="absolute top-2 left-2 bg-secondary/90 text-secondary-foreground px-2 py-1 rounded text-xs font-semibold">
+                      {video.category}
+                    </div>
+                  </div>
+
+                  <div className="p-3 space-y-2">
+                    <h3 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">
+                      {video.title}
+                    </h3>
+                    
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Icon name="Eye" size={14} />
+                        <span>{video.views}</span>
+                      </div>
+                      <Button variant="ghost" size="icon" className="h-6 w-6">
+                        <Icon name="Heart" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       <footer className="border-t border-border bg-card/30 backdrop-blur-sm mt-12">
